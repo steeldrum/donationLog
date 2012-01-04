@@ -1,0 +1,351 @@
+<!DOCTYPE html> 
+<html> 
+<!--------------------------------------
+$Revision:: 167                        $: Revision of last commit
+$LastChangedBy::                       $: Author of last commit
+$LastChangedDate:: 2011-12-19 18:07:37#$: Date of last commit
+--------------------------------------->
+<!--
+
+donationLog
+
+index.html 
+
+tjs 101220
+
+file version 1.00
+
+release version 1.00
+
+test: http://localhost/~thomassoucy/donationLog/index.html
+-->
+	<head> 
+	<meta charset="utf-8">
+	<title>Charity Hound</title> 
+	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="styles/jquery.mobile-1.0.min.css" /> 
+	<!-- link rel="stylesheet" href="styles/jquery.mobile.min.css" / --> 
+	<!-- link rel="stylesheet" href="styles/jquery.mobile-1.0rc3.min.css" / --> 
+    <link rel="stylesheet" href="styles/donationLog.css">
+    <script src="scripts/donationLog.js"></script>
+	<script src="scripts/jquery-1.6.4.min.js"></script>
+	<script>
+			//globals used for account management
+		var loginAccountNumber = 0;
+		var db;
+		var currentChoice;
+		//tjs101230
+		var authenticated = false;
+
+		// tjs 111223
+		var charitiesHtml = '<ul><li></li></ul>';
+		
+		$(document).bind('mobileinit',function(){ 
+		 	// Globally configure search filter placeholder text
+			//$.mobile.listview.prototype.options.filterPlaceholder = "Search me..."; 
+			
+			// Configure a "starts with" search instead of the default
+			//$.mobile.listview.prototype.options.filterCallback = function( text, searchValue ){
+				// New "Starts With" search, return false when there's a match
+				//return !(text.toLowerCase().indexOf( searchValue ) === 0);
+			//};	
+		});
+		
+		// When the page loads configure a custom search
+		/*
+		$('#calendar-page').live("pagebeforeshow", function(){
+		  $("#calendar-list").listview('option', 'filterCallback', 
+				function( text, searchValue ){
+					// New "Starts With" search, return false when there's a match
+					return !(text.toLowerCase().indexOf( searchValue ) === 0);
+				}
+			);
+		});*/
+
+		$(document).bind('pagebeforechange',function(e, data){ 
+		 	// Get the page
+		 	var toPage = data.toPage;
+		 	//alert("pagebeforechange toPage " + toPage);
+		 	if (typeof(toPage) == "string") {
+		 		var index = toPage.indexOf("charities-page");
+		 		if (index <0) {
+		 			index = toPage.indexOf("report-page");
+		 		}
+		 		//alert("pagebeforechange index " + index);
+		 		if (index >= 0) {
+		 			if (loginAccountNumber == 0) {
+		 				e.preventDefault();
+		 			}
+		 		}
+			}
+		});
+
+		function login() {
+			$.mobile.changePage("#login-dial");
+		}
+
+		function logout() {
+			// process button action...
+			//alert("logout");
+			handleLogout();
+			authenticated = false;
+			loginAccountNumber = 0;
+			setLoginButton();
+		}
+		
+		function setLoginButton() {
+			var buttonHtml = '<input type="button" value="Login" onclick="javascript:login();" data-icon="arrow-l" class="ui-btn-right"/>';
+			$('#loginLogoutButton').empty();
+			$('#loginLogoutButton').append($(buttonHtml));
+		}
+		
+	</script>
+	<script src="scripts/jquery.mobile-1.0.min.js"></script>
+	<!-- script src="scripts/jquery.mobile.min.js"></script -->
+	<!-- script src="scripts/jquery.mobile-1.0rc3.min.js"></script -->
+	</head> 
+<body> 
+
+<!-- Home Page -->
+<div data-role="page" id="home-page" data-title="Home">
+	<div data-role="header">
+		<h1>Charity Hound</h1>
+		<div id="loginLogoutButton">
+		<!-- a href="#login-dial" data-icon="arrow-r" class="ui-btn-right">Login</a -->
+		</div>
+		
+	</div>
+
+	<div data-role="content">
+		<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
+			<li data-role="list-divider">Choices</li>
+			<li>
+			  <!-- a href="#charities-page" -->
+			  <a href="javascript:hijaxCharitiesPage();">
+				<h3>Charities</h3>
+			  </a>
+			</li>
+			<li>
+			  <a href="#report-page">
+				<h3>Report</h3>
+			  </a>
+			</li>	
+			<li>
+			  <a href="#about-page">
+				<h3>About</h3>
+			  </a>
+			</li>					
+		</ul>
+	</div>	
+</div>
+
+
+
+<!-- Report -->
+<div data-role="page" data-add-back-btn="true" id="report-page" data-title="Report">
+	<div data-role="header">
+		<h1>CharityHound Reports</h1>
+	</div>
+
+	<div data-role="content">
+	  <form id="test" id="test" action="#" method="post">
+		<p>   
+		<label for="startYear">Start Year:</label>
+        <input type="number" name="startYear" id="start" min="2000" max="2100" step="1" value="2000" placeholder="Start Year" data-theme="d" />
+		</p> 
+		<p>   
+		<label for="endYear">End Year:</label>
+        <input type="number" name="endYear" id="end" min="2000" max="2100" step="1" value="2001" placeholder="End Year" data-theme="d" />
+		</p> 
+			<p>
+			<button id="donations">View Donations</button>
+			</p>
+	  </form>	
+	</div>
+	<script type="text/javascript">
+		/* Page specific scripts here. */
+	  	var dt = new Date();
+		var my_year=dt.getFullYear();
+		var start = $('#start').get(0);
+		start.value = my_year;
+		var end = $('#end').get(0);
+		end.value = my_year;
+		
+		$("#start").bind('change', function(event) {
+			var start = $('#start').val();
+			var end = $('#end').val();
+			if (end < start) {
+				$('#end').val(start);
+				//alert("reports start now " + start.value);
+			}
+		});
+
+		$("#end").bind('change', function(event) {
+			var start = $('#start').val();
+			var end = $('#end').val();
+			if (end < start) {
+				$('#start').val(end);
+				//alert("reports start now " + start.value);
+			}
+		});
+
+	</script>	
+</div>
+
+<!-- About -->
+<div data-role="page" data-add-back-btn="true" id="about-page" data-title="About">
+	<div data-role="header">
+		<h1>About CharityHound</h1>
+	</div>
+
+	<div data-role="content">
+                <p>Charity Hound Web App gives you mobile access to your Collogistics hosted Charity
+                Hound Web Application. Record (i.e. "log") donor solicitations by selecting the charity from
+                the list.  To select a charity press a letter on the list divider that indexes the part
+                of the list where the charity name can be found.  Once the list portion is shown simply
+                scroll to the charity.  To select another charity scroll to another index list divider
+                (above or below the current selection).  Alternatively to select a charity use the
+                search field (prior to the first index divider) typing a unique part of the name.  For example to find
+                'American Red Cross' type 'red' in the search box.  If needed, after the search,
+                scroll the list.  Before you toss the solicitation in your recycling bin you can
+                log the solicitation by simply clicking the far right button
+                 (<a href="#" data-role="button" data-inline="true" data-icon="refresh" data-iconpos="notext">Recycle</a>
+                recycle icon).  If desired, you may also
+                log an actual donation, simply click the charity name in the list, filling out the form.
+                You may view a report of your contributions over a range of years
+                (or simply a single tax year).</p>
+	</div>
+	<script type="text/javascript">
+		/* Page specific scripts here. */
+	</script>	
+</div>
+
+<!-- Login Page/Dialog -->
+<div data-role="dialog" id="login-dial">
+	<div data-role="header">
+		<h1>Login</h1>
+	</div>
+	
+	<div data-role="content" data-theme="c">	
+			<form name="loginForm">
+				<p>
+				Charity Hound login...
+				</p>
+				<p/>
+		<p>	
+	    <label for="name">Username:</label>
+	    <input type="text" name="name" id="name" value="" placeholder="username" data-theme="d"/>
+	    </p>
+		<p>	
+	    <label for="password">Password:</label>
+	    <input type="password" name="pword" id="pword" value="" placeholder="" data-theme="d"/>
+	    </p>
+			</form>
+		<br><br>
+		<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>		
+		<a href="javascript:processLoginForm();" data-role="button" data-inline="true">Login</a>
+	</div>
+	<script>
+
+	</script>
+</div>
+
+<!-- Donate Page/Dialog -->
+<div data-role="dialog" id="donate-dial">
+	<div data-role="header">
+		<h1>Donate</h1>
+	</div>
+	
+	<div data-role="content" data-theme="c">	
+			<form name="donationForm">
+				<input type="hidden" name="charityId" />
+				<input type="hidden" name="memberId" />
+				<p>
+				Charity Hound donation...
+				</p>
+				<p/>
+		<!--  p>
+		TODO add name as read only	
+	    <label for="charityName">Charity:</label>
+	    <input type="text" name="charityName" id="charityName" value="" placeholder="charityName" data-theme="d"/>
+	    </p -->
+		<p>	
+	    <label for="amount">Amount:</label>
+	    <input type="number" name="amount" id="amount" value="" placeholder="" data-theme="d"/>
+	    </p>
+			</form>
+		<br><br>
+		<a href="#charities-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>		
+		<a href="javascript:processDonationForm();" data-role="button" data-inline="true">Donate</a>
+	</div>
+	
+	<script>
+	</script>
+</div>
+
+
+    <script type="text/javascript">
+
+	//function to execute when doc ready
+	$(function() {
+
+		var shortName = 'Charities';
+		var version = '1.0';
+		var displayName = 'Charities';
+		//var maxSize = 65536;
+		var maxSize = 131072;
+		db = openDatabase(shortName, version, displayName, maxSize);
+		db.transaction(
+			function(transaction) {				
+				transaction.executeSql(
+					'CREATE TABLE IF NOT EXISTS charities ' +
+					' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
+					' memberId INTEGER NOT NULL, charityName TEXT NOT NULL, ' +
+					' shortName TEXT DEFAULT NULL, dunns TEXT DEFAULT NULL, ' +
+					' url TEXT DEFAULT NULL, description TEXT DEFAULT NULL, ' +
+					' numStars INTEGER NOT NULL, createdDate DATE NOT NULL, ' +
+					' isInactive INTEGER DEFAULT NULL );',
+					null,
+					null,
+					errorHandler
+				);				
+			}
+		);
+		
+		setLoginButton();
+		//tjs 111223
+		loadCharities();
+		
+		$("#donations").click(function() {
+				var elm = $('#start').get(0);
+				var start = elm.value;
+				elm = $('#end').get(0);
+				var end = elm.value;
+
+				var url = '../charityhound/donationsReport2FPDF.php?account=0&start=' + start + '&end=' + end + '&hideSolicitations=true';
+				//alert("reports view donations url " + url);
+				window.open(url,'resizable,scrollbars');
+		    });	
+
+	  });
+
+	//TODO support for ads
+	  //$("#adImage").load("getAdImageTag.php");
+	  /*
+	  $("#adImage").load("getAdImageTag.php", null, function() {
+	  		//alert("index adImage load succeeded");
+	  		var data = $('#adImageTag');
+	  		//alert("index adImage data length " + data.length);
+	  		var altText = data[0].alt;
+	  		//alert("index adImage altText " + altText);
+    		$("#adTab").text(altText);    
+			hideAds();
+	  });
+*/
+		//tjs r34+
+		//init();
+
+	</script>
+</body>
+</html>
+
