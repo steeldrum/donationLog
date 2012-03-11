@@ -23,7 +23,8 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 	<meta charset="utf-8">
 	<title>Charity Hound</title> 
 	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
-	<link rel="stylesheet" href="styles/jquery.mobile-1.0.min.css" /> 
+	<link rel="stylesheet" href="styles/jquery.mobile-1.0.1.min.css" /> 
+	<!-- link rel="stylesheet" href="styles/jquery.mobile-1.0.min.css" / --> 
 	<!-- link rel="stylesheet" href="styles/jquery.mobile.min.css" / --> 
 	<!-- link rel="stylesheet" href="styles/jquery.mobile-1.0rc3.min.css" / --> 
     <link rel="stylesheet" href="styles/donationLog.css">
@@ -37,8 +38,14 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 		//tjs101230
 		var authenticated = false;
 
+		// tjs 120307
 		// tjs 111223
-		var charitiesHtml = '<ul><li></li></ul>';
+		//var charitiesHtml = '<ul><li></li></ul>';
+		var charitiesHtml = new Array();
+		var numberSections = 11;
+		var currentSectionNumber = 0;
+		var sectionLetters = new Array(numberSections);
+		var sectionRanges = new Array(numberSections);
 		
 		$(document).bind('mobileinit',function(){ 
 		 	// Globally configure search filter placeholder text
@@ -100,7 +107,8 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 		}
 		
 	</script>
-	<script src="scripts/jquery.mobile-1.0.min.js"></script>
+	<script src="scripts/jquery.mobile-1.0.1.min.js"></script>
+	<!-- script src="scripts/jquery.mobile-1.0.min.js"></script -->
 	<!-- script src="scripts/jquery.mobile.min.js"></script -->
 	<!-- script src="scripts/jquery.mobile-1.0rc3.min.js"></script -->
 	</head> 
@@ -121,7 +129,7 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 			<li data-role="list-divider">Choices</li>
 			<li>
 			  <!-- a href="#charities-page" -->
-			  <a href="javascript:hijaxCharitiesPage();">
+			  <a href="javascript:hijaxCharitiesPage(0);">
 				<h3>Charities</h3>
 			  </a>
 			</li>
@@ -275,7 +283,9 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 	    </p>
 			</form>
 		<br><br>
-		<a href="#charities-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>		
+		<!--  a href="#charities-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a -->		
+		<!--  a href="javascript:hijaxCharitiesPage(0);" data-role="button" data-inline="true" data-theme="a">Cancel</a -->		
+		<a href="javascript:hijaxCharitiesPage();" data-role="button" data-inline="true" data-theme="a">Cancel</a>		
 		<a href="javascript:processDonationForm();" data-role="button" data-inline="true">Donate</a>
 	</div>
 	

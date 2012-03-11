@@ -169,3 +169,45 @@ form p {
 .select-list-wrapper ul li a:active * {
     color: #fff;
 }
+
+/* tjs 120203 */
+*.ui-listview *.ui-btn-up-c,
+*.ui-listview *.ui-btn-down-c,
+*.ui-listview *.ui-btn-hover-c
+  {
+  /* Copy your .ui-btn-up styles here */
+	border: 1px solid 		#ccc /*{c-bup-border}*/;
+}
+
+/* Repeat for each of your themes */
+*.ui-listview *.ui-btn-up-a,
+*.ui-listview *.ui-btn-down-a,
+*.ui-listview *.ui-btn-hover-a
+  {
+  /* Copy your .ui-btn-up styles here */
+	border: 1px solid 		#222 /*{a-bup-border}*/;
+}
+
+*.ui-listview *.ui-btn-up-b,
+*.ui-listview *.ui-btn-down-b,
+*.ui-listview *.ui-btn-hover-b
+  {
+  /* Copy your .ui-btn-up styles here */
+	border: 1px solid 		#145072 /*{b-bup-border}*/;
+}
+
+*.ui-listview *.ui-btn-up-d,
+*.ui-listview *.ui-btn-down-d,
+*.ui-listview *.ui-btn-hover-d
+  {
+  /* Copy your .ui-btn-up styles here */
+	border: 1px solid 		#ccc /*{d-bup-border}*/;
+}
+
+*.ui-listview *.ui-btn-up-e,
+*.ui-listview *.ui-btn-down-e,
+*.ui-listview *.ui-btn-hover-e
+  {
+  /* Copy your .ui-btn-up styles here */
+	border: 1px solid 		#F7C942 /*{e-bup-border}*/;
+}

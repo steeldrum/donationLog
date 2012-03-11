@@ -6,18 +6,13 @@ $LastChangedDate:: 2011-12-19 18:07:37#$: Date of last commit
 /* 
 donationLog/scripts/
 donationLog.js
-
 tjs 101221
-
 file version 1.00 
-
 release version 1.00
-
 */
 /*
 api references:
 http://www.datatables.net/api
-
 */
 
 function getXMLHTTPRequest() 
@@ -88,206 +83,6 @@ function removeSpaces(string) {
 					' numStars INTEGER NOT NULL, createdDate DATE NOT NULL, ' +
 					' isInactive INTEGER DEFAULT NULL );
 */
-/*
-function loadCharities(torf) {
-
-//todo check if already loaded and bypass if so
-
-	//at this point the client side database has been synchronized with the server's
-	//use the client side database to populate the solicitations and the donations lists
-	var solicitationHtml = "<ul>";
-	var donationHtml = "<ul>";
-	
-	//charities.clear();
-	//alert("charity refreshCharities clear charities...");
-	//Array.clear(charities);
-	var charities = new Array();
-	var charity;
-	//alert("charity refreshCharities selecting client side charities...");
-	db.transaction(
-		function(transaction) {
-			transaction.executeSql(
-				//"SELECT * FROM charities WHERE isInactive = null or isInactive=' ' ORDER BY charityName;",
-				//"SELECT * FROM charities WHERE isInactive = null ORDER BY charityName;",
-				"SELECT * FROM charities ORDER BY charityName;",
-				//[],
-				null,
-				function (transaction, result) {
-					//alert("charity loadCharities number of active charities " + result.rows.length);
-					for (var i=0; i < result.rows.length; i++) {
-						var row = result.rows.item(i);
-						var charityId = row.id;
-						var memberId = row.memberId;
-						var charityName = row.charityName;
-						var amount = 0;
-						// function Charity(id, memberId, charityName, shortName, dunns, url, description, numStars, createdDate, isInactive) {
-						var shortName = row.shortName;
-						var dunns = row.dunns;
-						var url = row.url;
-						var description = row.description;
-						var numStars = row.numStars;
-						var createdDate = row.createdDate;
-						var isInactive = row.isInactive;
-						//if (i % 100 == 0) {
-						//	alert("charity loadCharities i " + i + " memberId " + memberId + " charityId " + charityId);
-						//}
-						
-						charity = new Charity(charityId, memberId, charityName, shortName, dunns, url, description, numStars, createdDate, isInactive);
-						//if (i % 100 == 0) {
-						//	alert("charity loadCharities memberId " + charity.memberId + " charityId " + charity.id);
-						//}
-						charities.push(charity);
-						//solicitationHtml += '<li><a href="javascript:handleCharitySelect(false, ' + charityId + ', ' + memberId + ', ' + amount + ')">' + charityName + '</a></li>'
-					}
-					
-					//we now have charities loaded in memory array from the client side RDB
-					var len = charities.length;
-					//alert("charity loadCharities charities len " + len + " torf " + torf);
-					
-					//var numberSections = 5;
-					//var numberSections = 8;
-					var numberSections = 6;
-					var sectionLetter;
-					var startLetter;
-					var lastSectionLetter;
-					var finalSectionLetter;
-					var sectionLetters = new Array(numberSections);
-					//assumes at least five charities!
-					var thresholdSectionLen = Math.round(len/numberSections);
-					var sectionCount = 0;
-					var nameCount = 0;
-					var minNameCount = 1;
-					var excessLettersCount = 0;
-					//assumes always have at least one charity that starts with an 'A'!
-					lastSectionLetter = "A";
-					sectionLetters[sectionCount++] = lastSectionLetter;
-					var armed = false;
-					var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-					
-					//tjs101228
-					var letterLengths = { "A":0, "B": 0, "C":0, "D":0, "E":0, "F":0, "G":0, "H":0, "I":0, "J":0, "K":0, "L":0, "M":0, "N":0, "O":0, "P":0, "Q":0, "R":0, "S":0, "T":0, "U":0, "V":0, "W":0, "X":0, "Y":0, "Z":0 };
-					var letterLength = 0;
-					var lastLetter = "A";
-					
-					//make initial pass thru array to derive information for n sections
-					for (i = 0; i < len; i++) {
-						charity = charities[i];
-						var charityName = charity.charityName;
-						startLetter = charityName.substring(0,1);
-
-						//tjs101228
-						letterLength++;
-						if (alphabet.indexOf(startLetter) >= 0 && startLetter != lastLetter) {
-							letterLengths[lastLetter] = letterLength;
-							lastLetter = startLetter;
-							letterLength = 0;
-						}
-					}
-					//alert("donationLog loadCharities len " + len + " thresholdSectionLen " + thresholdSectionLen + " sectionCount " + sectionCount);
-					//if (sectionCount < numberSections) {
-						//sectionLetters[sectionCount] = finalSectionLetter;
-					//	sectionLetters[sectionCount] = lastSectionLetter;
-					//}
-					
-					//tjs101228
-					numberSections = 11;
-					thresholdSectionLen = Math.round(len/numberSections);
-					//sectionLetters.length = 0;
-					sectionCount = 0;
-					var cumulativeLength = 0;
-					for(key in letterLengths)
-					{
-						cumulativeLength += letterLengths[key];
-						var offset = Math.round(cumulativeLength/thresholdSectionLen);
-						if (offset > sectionCount) {
-							sectionLetters[sectionCount++] = key;
-						}
-					   //alert("donationLog loadCharities key " + key + " has value " + letterLengths[key]);
-					}
-					//alert("donationLog loadCharities temp " + temp);
-
-					//var sectionHeader = new Array(numberSections);
-
-					//alert("charity loadCharities first charity id " + charity.id);
-					//len = charities.length;
-					//alert("charity loadCharities charities len2 " + len);
-					var k = 0;
-					//e.g. <button onClick="window.location='http://www.javascriptkit.com'" style="background-color:lightgreen;width:100;height:50">Save our planet!</button>
-					for (i = 0; i < len; i++) {
-						charity = charities[i];
-						var charityId = charity.id;
-						var memberId = charity.memberId;
-						var charityName = charity.charityName;
-						var startLetter = charityName.substring(0,1);
-						for (j = k; j < numberSections; j++) {
-							if (startLetter == sectionLetters[j]) {
-								var buttonsHtml = '';
-								if (torf == true) {
-									buttonsHtml += '<li id="' + startLetter + 'D"><span>&nbsp;';
-								} else {
-									buttonsHtml += '<li id="' + startLetter + 'S"><span>&nbsp;';
-								}
-								for (n = 0; n < numberSections; n++) {
-									if (n == j) {
-										continue;
-									}
-									if (torf == true) {
-										//buttonsHtml += '<button onClick="window.location=#' + sectionLetters[n] + 'D"  style="background-color:lightgreen;width:100;height:50">' + sectionLetters[n] + '</button>&nbsp;';
-										buttonsHtml += '<a href="#' + sectionLetters[n] + 'D">' + sectionLetters[n] + '</a>&nbsp;&nbsp;&nbsp;';
-										//buttonsHtml += '<span onmouseout = "handleIndexSelect(D, ' + sectionLetters[n] + ');" onclick = "void(0);">' + sectionLetters[n] + '</span>&nbsp;&nbsp;&nbsp;';
-									} else {
-										//buttonsHtml += '<button onClick="window.location=#' + sectionLetters[n] + 'S"  style="background-color:lightgreen;width:100;height:50">' + sectionLetters[n] + '</button>&nbsp;';
-										buttonsHtml += '<a href="#' + sectionLetters[n] + 'S">' + sectionLetters[n] + '</a>&nbsp;&nbsp;&nbsp;';
-										//buttonsHtml += '<span onmouseout = "handleIndexSelect(S, ' + sectionLetters[n] + ');" onclick = "void(0);">' + sectionLetters[n] + '</span>&nbsp;&nbsp;&nbsp;';
-									}
-								}
-								++k;
-								if (torf == true) {
-									donationHtml += buttonsHtml + '</span></li>';
-								} else {
-									solicitationHtml += buttonsHtml + '</span></li>';
-								}
-								//alert("donationLog loadCharities buttonsHtml " + buttonsHtml);
-								break;
-							}
-						}
-						var amount = 0;
-						if (torf == true) {
-							//donationHtml += '<li><a class="nonprofit" href="javascript:handleCharitySelect(true, ' + charityId + ', ' + memberId + ', ' + amount + ')">' + charityName + '</a></li>';
-							//donationHtml += '<li><a class="nonprofit" href="javascript:handleCharitySelect(true, ' + charityId + ', ' + memberId + ', ' + amount + ', this)">' + charityName + '</a></li>';
-							donationHtml += '<li id="' + charityId + '"><a class="nonprofit" href="javascript:handleCharitySelect(true, ' + charityId + ', ' + memberId + ', ' + amount + ')">' + charityName + '</a></li>';
-						} else {
-							//solicitationHtml += '<li><a class="nonprofit" href="javascript:handleCharitySelect(false, ' + charityId + ', ' + memberId + ', ' + amount + ')">' + charityName + '</a></li>';
-							//solicitationHtml += '<li><a class="nonprofit" href="javascript:handleCharitySelect(false, ' + charityId + ', ' + memberId + ', ' + amount + ', this)">' + charityName + '</a></li>';
-							solicitationHtml += '<li><a class="nonprofit" href="javascript:handleCharitySelect(false, ' + charityId + ', ' + memberId + ', ' + amount + ')">' + charityName + '</a></li>';
-						}
-					}
-					if (torf == true) {
-						donationHtml += "</ul>";
-						$('#donationList').empty();
-						$('#donationList').append($(donationHtml));
-						//alert("charity loadCharities donationHtml is set " + donationHtml);
-						
-						//tjs r34+
-						var elm = $('#donationList ul')[0];
-						registerRecognizer(elm);
-						
-						$('#donation').removeClass('hideDiv').addClass('showDiv');
-				
-					} else {
-						solicitationHtml += "</ul>";
-						$('#solicitationList').empty();
-						$('#solicitationList').append($(solicitationHtml));	
-						//alert("charity loadCharities solicitationHtml is set " + solicitationHtml);
-										$('#solicitation').removeClass('hideDiv').addClass('showDiv');
-				
-					}					
-				},
-				errorHandler
-			);
-		}
-	);
-}*/
 
 //tjs111215
 function loadCharities() {
@@ -296,11 +91,6 @@ function loadCharities() {
 
 	//at this point the client side database has been synchronized with the server's
 	//use the client side database to populate the donations lists
-	//var donationHtml = '<ul data-role="listview" id="charities-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="star" data-split-theme="d">';
-	//		<a href="#" data-role="button" data-icon="custom" id="custom2" data-inline="true">Custom icon #2</a>
-	//var donationHtml = '<ul data-role="listview" id="charities-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="star" data-split-theme="d">';
-	//var donationHtml = '<ul data-role="listview" id="charities-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="nonprofit" data-split-theme="d">';
-	//var donationHtml = '<ul data-role="listview" id="charities-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="refresh" data-split-theme="d">';
 	var donationHtml = '<ul><li></li></ul>';
 	
 	//charities.clear();
@@ -312,10 +102,7 @@ function loadCharities() {
 	db.transaction(
 		function(transaction) {
 			transaction.executeSql(
-				//"SELECT * FROM charities WHERE isInactive = null or isInactive=' ' ORDER BY charityName;",
-				//"SELECT * FROM charities WHERE isInactive = null ORDER BY charityName;",
 				"SELECT * FROM charities ORDER BY charityName;",
-				//[],
 				null,
 				function (transaction, result) {
 					//alert("charity loadCharities number of active charities " + result.rows.length);
@@ -343,7 +130,6 @@ function loadCharities() {
 						//	alert("charity loadCharities memberId " + charity.memberId + " charityId " + charity.id);
 						//}
 						charities.push(charity);
-						//solicitationHtml += '<li><a href="javascript:handleCharitySelect(false, ' + charityId + ', ' + memberId + ', ' + amount + ')">' + charityName + '</a></li>'
 					}
 					
 					//we now have charities loaded in memory array from the client side RDB
@@ -358,7 +144,7 @@ function loadCharities() {
 					var startLetter;
 					var lastSectionLetter;
 					var finalSectionLetter;
-					var sectionLetters = new Array(numberSections);
+					//var sectionLetters = new Array(numberSections);
 					//assumes at least five charities!
 					var thresholdSectionLen = Math.round(len/numberSections);
 					var sectionCount = 0;
@@ -376,9 +162,9 @@ function loadCharities() {
 					var letterLength = 0;
 					var lastLetter = "A";
 					
-					
+					// tjs 120308
 					//tjs 111223
-					donationHtml = '<ul data-role="listview" id="charities-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="refresh" data-split-theme="d">';
+					//donationHtml = '<ul data-role="listview" id="charities-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="refresh" data-split-theme="d">';
 
 					//make initial pass thru array to derive information for n sections
 					for (i = 0; i < len; i++) {
@@ -397,13 +183,28 @@ function loadCharities() {
 					thresholdSectionLen = Math.round(len/numberSections);
 					sectionCount = 0;
 					var cumulativeLength = 0;
+					var keys = new Array();
 					for(key in letterLengths)
 					{
+						keys.push(key);
 						cumulativeLength += letterLengths[key];
 						var offset = Math.round(cumulativeLength/thresholdSectionLen);
 						if (offset > sectionCount) {
-							sectionLetters[sectionCount++] = key;
-						}
+							var keyLabel = '';
+							if (sectionCount == 10) {
+								keyLabel = keys[0] + '-Z';
+							} else {
+								for (var i = 0; i < keys.length; i++) {
+									keyLabel += keys[i];
+									if (i < keys.length - 1) {
+										keyLabel += ', ';
+									}
+								}
+							}
+							sectionRanges[sectionCount] = keyLabel;
+							sectionLetters[sectionCount++] = keys[0];
+							keys.length = 0;
+						} 					
 					   //alert("donationLog loadCharities key " + key + " has value " + letterLengths[key]);
 					}
 					//alert("donationLog loadCharities temp " + temp);
@@ -411,7 +212,6 @@ function loadCharities() {
 					//len = charities.length;
 					//alert("charity loadCharities charities len2 " + len);
 					var k = 0;
-					//e.g. <button onClick="window.location='http://www.javascriptkit.com'" style="background-color:lightgreen;width:100;height:50">Save our planet!</button>
 					for (i = 0; i < len; i++) {
 						charity = charities[i];
 						var charityId = charity.id;
@@ -420,80 +220,37 @@ function loadCharities() {
 						var startLetter = charityName.substring(0,1);
 						for (j = k; j < numberSections; j++) {
 							if (startLetter == sectionLetters[j]) {
-								var buttonsHtml = '';
-								//if (torf == true) {
-									//buttonsHtml += '<li id="' + startLetter + 'D"><span>&nbsp;';
-									//buttonsHtml += '<li id="' + startLetter + 'D"><div  class="segmented-control ui-bar-d"><div data-role="controlgroup" data-type="horizontal">';
-									buttonsHtml += '<li id="' + startLetter + 'D" data-role="list-divider"><div  class="segmented-control ui-bar-d"><div data-role="controlgroup" data-type="horizontal">';
-								//} else {
-								//	buttonsHtml += '<li id="' + startLetter + 'S"><span>&nbsp;';
-								//}
-								for (n = 0; n < numberSections; n++) {
-									if (n == j) {
-										//continue;
-										//buttonsHtml += '<a href="#' + sectionLetters[n] + 'D" data-role="button" class="ui-control-inactive">' + sectionLetters[n] + '</a>';
-										continue;
+									// tjs 120308
+									if (k > 0) {
+										donationHtml += "</ul>";
+										//charitiesHtml = donationHtml;
+										charitiesHtml.push(donationHtml);
 									}
-									//if (torf == true) {
-									// tjs 111219
-										//buttonsHtml += '<a href="#' + sectionLetters[n] + 'D">' + sectionLetters[n] + '</a>&nbsp;&nbsp;&nbsp;';
-									//buttonsHtml += '<a href="#' + sectionLetters[n] + 'D" data-role="button" data-inline="true" data-rel="external">' + sectionLetters[n] + '</a>&nbsp;&nbsp;&nbsp;';
-									buttonsHtml += '<a href="#' + sectionLetters[n] + 'D" data-role="button" class="ui-control-active" rel="external">' + sectionLetters[n] + '</a>';
-									//} else {
-										//	buttonsHtml += '<a href="#' + sectionLetters[n] + 'S">' + sectionLetters[n] + '</a>&nbsp;&nbsp;&nbsp;';
-									//}
-								}
 								++k;
-								//if (torf == true) {
-								//donationHtml += buttonsHtml + '</span></li>';
-									donationHtml += buttonsHtml + '</div></div></li>';
-								//} else {
-								//	solicitationHtml += buttonsHtml + '</span></li>';
-								//}
-								//alert("donationLog loadCharities buttonsHtml " + buttonsHtml);
+									//donationHtml = '<ul data-role="listview" id="' + startLetter + 'L" data-filter="true" data-filter-placeholder="Search..." data-split-icon="refresh" data-split-theme="d">';
+									donationHtml = '';
 								break;
 							}
 						}
-					//for (i = 0; i < len; i++) {
-					//	charity = charities[i];
-					//	var charityId = charity.id;
-					//	var memberId = charity.memberId;
-					//	var charityName = charity.charityName;
 						var amount = 0;
-						//if (torf == true) {
 						donationHtml += '<li id="' + charityId + '"><a href="javascript:addDonation(' + memberId + ', ' + charityId + ', 0)">' + charityName + '</a><a class="ui-icon-nonprofit" href="javascript:addSolicitation(' + memberId + ', ' + charityId + ', 0)" data-role="button">Zero Donation</a></li>';
 					}
-						donationHtml += "</ul>";
-						charitiesHtml = donationHtml;
-						// tjs 111220
-						//$('#donationList').empty();
-						//$('#donationList').append($(donationHtml));
-						// tjs 111223
-						//$(donationHtml).insertAfter('#donationList').listView();
-						//return donationHtml;
-						//alert("charity loadCharities donationHtml is set " + donationHtml);
-						
-						//tjs r34+
-						//var elm = $('#donationList ul')[0];
-						//registerRecognizer(elm);
-						
-						//$('#donation').removeClass('hideDiv').addClass('showDiv');
+					// tjs 120309 get the last letter section...
+					//donationHtml += "</ul>";
+					charitiesHtml.push(donationHtml);
 				},
 				errorHandler
 			);
 		}
 	);
-	//return donationHtml;
 }
+
 //add
 //http://localhost/~thomassoucy/philanthropy/donations.php?account=1&amount=5&charityId=5&remove=false&id=0
 //alter
 //http://localhost/~thomassoucy/philanthropy/donations.php?account=1&amount=15&charityId=5&remove=false&id=1
 //delete
 //http://localhost/~thomassoucy/philanthropy/donations.php?account=1&amount=5&charityId=5&remove=true&id=1
-
-//function addAmount(charityId, memberId) {
-//function doAmountTransaction(trxType, charityId, memberId, id) {
 function doAmountTransaction(trxType, charityId, memberId, id, newAmount, newDate) {
 	//alert ("charity doAmountTransaction charity id " + charityId + " member id " + memberId);
 	//alert ("charity doAmountTransaction charity id " + charityId + " member id " + memberId + " id " + id + " new amount " + newAmount + " new date " + newDate);
@@ -580,7 +337,8 @@ function processDonationForm() {
 	doAmountTransaction(0, charityId, memberId, 0, amount);
 
 	//$("#donationDialog").dialog("close");
-	$('.ui-dialog').dialog('close');
+	//$('.ui-dialog').dialog('close');
+	hijaxCharitiesPage();
 }
 
 function processLoginForm() {
@@ -589,6 +347,9 @@ function processLoginForm() {
 	var password = document.loginForm.pword.value;
 	//alert("donationLog processLoginForm name " + name + " password " + password);
 
+	// tjs 120311
+	var doLoginCompleted = false;
+	
 	var loginRequest = getXMLHTTPRequest();
 	// e.g. http://localhost/~thomassoucy/donationLog/login.php?username=SteelDrum&password=tom123
 	var url = 'login.php?username=' + name + '&password=' + password;
@@ -768,10 +529,20 @@ function processLoginForm() {
 																errorHandler
 															);
 														}
+														// tjs 120311
+														charitiesHtml.length = 0;
+														sectionLetters.length = 0;
+														sectionRanges.length = 0;
+														loadCharities(); 
+														setTimeout(function() {
+															finalizeLogin();
+															},3000);
 													}
 												);
 											} else {
-												//alert("charity processLoginForm no new insertions...");			
+												//alert("charity processLoginForm no new insertions...");
+												// tjs 120311
+												doLoginCompleted = true;
 											}
 								
 											//todo request inactives from server and update the client side RDB with them
@@ -787,14 +558,18 @@ function processLoginForm() {
 								//tjs 111215
 			//$('#loginButton').removeClass('showDiv').addClass('hideDiv');
 			//$('#logoutButton').removeClass('hideDiv').addClass('showDiv');
+											// tjs 120311
+											if (doLoginCompleted) {
+												finalizeLogin();
+											}
 			//tjs 111216
-											var buttonHtml = '<input type="button" value="Logout" onclick="javascript:logout();" data-icon="arrow-l" class="ui-btn-right"/>';
-			$('#loginLogoutButton').empty();
-			$('#loginLogoutButton').append($(buttonHtml));
-											$('.ui-dialog').dialog('close');
+											//var buttonHtml = '<input type="button" value="Logout" onclick="javascript:logout();" data-icon="arrow-l" class="ui-btn-right"/>';
+			//$('#loginLogoutButton').empty();
+			//$('#loginLogoutButton').append($(buttonHtml));
+											//$('.ui-dialog').dialog('close');
 
 											// tjs 111220
-											$.mobile.loadPage( '#charities-page', { showLoadMsg: false } );
+											//$.mobile.loadPage( '#charities-page', { showLoadMsg: false } );
 											
 										 //isDone = true;
 										// i.e. means no response status 200
@@ -817,11 +592,19 @@ function processLoginForm() {
 							);
 						}
 					);
-
 				});
 			}
 		}
 	});
+}
+
+// tjs 120311
+function finalizeLogin() {
+	var buttonHtml = '<input type="button" value="Logout" onclick="javascript:logout();" data-icon="arrow-l" class="ui-btn-right"/>';
+	$('#loginLogoutButton').empty();
+	$('#loginLogoutButton').append($(buttonHtml));
+	$('.ui-dialog').dialog('close');	
+	$.mobile.loadPage( '#home-page', { showLoadMsg: false } );
 }
 
 function handleLogout() {
@@ -888,9 +671,7 @@ function sortCharityById(a,b) {
 }
 
 function handleCharitySelect(torf, charityId, memberId, amount) {
-//function handleCharitySelect(torf, charityId, memberId, amount, target) {
 	//alert("donationLog handleCharitySelect torf " + torf + " charityId " + charityId + " memberId " + memberId + " amount " + amount);
-	//if (target) {
 	
 	var target = $('#' + charityId)[0];
 	if (target != null) {
@@ -926,15 +707,6 @@ function handleCharitySelect(torf, charityId, memberId, amount) {
 	//addDonation(memberId, charityId, amount);
 	//doAmountTransaction(0, charityId, memberId ,0 ,0);						
 }
-/*
-function handleIndexSelect(solOrDon, index) {
-	alert("donationLog handleIndexSelect solOrDon " + solOrDon + " index " + index);
-	//todo dialog box to confirm the log of the solicitation or donation
-	//addDonation(memberId, charityId, amount);
-	//doAmountTransaction(0, charityId, memberId ,0 ,0);
-	window.location='#' + index + solOrDon;
-}
-*/
 
 function hideAds() {
 	//setTimeout(hide, 5000);
@@ -952,7 +724,7 @@ function reveal() {
 	ads.style.marginTop = "";
 	hideAds();
 }
-
+/*
 // tjs 111223
 function hijaxCharitiesPage() {
 	if (loginAccountNumber == 0)
@@ -972,6 +744,90 @@ function hijaxCharitiesPage() {
 		
 		// tweak the new page just added into the dom (if needed)
 	    
+	// enhance and open the new page
+	    $.mobile.changePage(newPage);
+}
+model:
+        <div class="content-secondary"> 
+            This would be the sidebar/split view on a tablet, 
+            would show up stacked on a mobile device
+        </div><!-- end content-secondary -->    
+
+        <div class="content-primary"> 
+            This is the main content. 
+
+            If Tablet device this would be to the right of the above content, 
+            if mobile this would be below the above content.
+
+        </div><!-- end content-primary -->
+
+*/
+
+// tjs 120309
+function hijaxCharitiesPage(sectionNumber) {
+	//alert("donationLog hijaxCharitiesPage sectionNumber " + sectionNumber);
+	//debug comment out:
+	if (loginAccountNumber == 0)
+		return;
+	if (sectionNumber == null) {
+		sectionNumber = currentSectionNumber;
+	} else {
+		currentSectionNumber = sectionNumber;
+	}
+	/*
+	 * retrofit:
+	 donationHtml = '<ul data-role="listview" id="' + startLetter + 'L" data-filter="true" data-filter-placeholder="Search..." data-split-icon="refresh" data-split-theme="d">';
+
+	 buttonsHtml = '<li id="' + startLetter + 'D" data-role="list-divider"><div  class="segmented-control ui-bar-d"><div data-role="controlgroup" data-type="horizontal">';
+	 buttonsHtml += '<a href="#' + sectionLetters[n] + 'D" data-role="button" class="ui-control-active" rel="external">' + sectionLetters[n] + '</a>';
+	donationHtml += buttonsHtml + '</div></div></li>';
+	 */
+	var newPageHtml = '<div data-role="page" id="charities-page" data-title="Charities" data-theme="b" data-dom-cache="true">';
+		newPageHtml += '<div data-role="header"><a href="#home-page" data-icon="arrow-l">Back</a><h1>Charities</h1></div>';
+		newPageHtml += '<div data-role="content">';
+		//newPageHtml += '<div class="content-secondary">';
+		//newPageHtml += '<ul data-role="listview">';
+		newPageHtml += '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search..." data-split-icon="refresh" data-split-theme="d">';
+		var  buttonsHtml = '<li data-role="list-divider"><div class="segmented-control ui-bar-d"><div data-role="controlgroup" data-type="horizontal">';
+		//var  buttonsHtml = '<li data-role="list-divider"><div data-role="controlgroup" data-type="horizontal">';
+		for (var i = 0; i < sectionRanges.length; i++) {
+			//newPageHtml += '<li><a onclick="javascript:hijaxCharitiesPage(' + i + ')" data-role="button" style="padding:2px; font-size:x-small;"';
+			 //buttonsHtml += '<a onclick="javascript:hijaxCharitiesPage(' + i + ') data-role="button"';
+			 buttonsHtml += '<a href="javascript:hijaxCharitiesPage(' + i + ')" data-role="button" style="font-size:x-small;"';
+			if (i == sectionNumber) {
+				//newPageHtml += ' data-theme="c" ';
+				buttonsHtml += ' class="ui-control-active"';
+				//rel="external">' + sectionLetters[n] + '</a>';
+			}
+			//newPageHtml += '>' + sectionRanges[i] + '</a></li>';
+			//buttonsHtml += ' rel="external">' + sectionRanges[i] + '</a>';
+			buttonsHtml += ' rel="external">' + sectionRanges[i] + '</a>';
+		}
+		//buttonsHtml += '</li>';
+		buttonsHtml += '</div></div></li>';
+		//buttonsHtml += '</div></li>';
+		newPageHtml += buttonsHtml;
+		//newPageHtml += '</ul>';
+		//newPageHtml += '</div><!-- end content-secondary -->';
+		//newPageHtml += '<div class="content-primary">';
+		newPageHtml += charitiesHtml[sectionNumber];
+		//newPageHtml += '</div><!-- /content-primary -->';
+		// tjs 120309 for perf:
+		newPageHtml += '</ul>';
+		newPageHtml += '</div><!-- content -->';
+		newPageHtml += '</div><!-- /page -->';
+		//newPageHtml += '</div></div>';
+		
+		//alert("hijaxCharitiesPage newPageHtml " + newPageHtml);
+		
+		var newPage = $(newPageHtml);
+		//add new page to page container
+		newPage.appendTo($.mobile.pageContainer);
+		
+		// tweak the new page just added into the dom (if needed)
+        //$('.content-secondary').css({'float':'left','width':'15%'});
+        //$('.content-primary').css({'margin-left':'18%'});
+
 	// enhance and open the new page
 	    $.mobile.changePage(newPage);
 }
