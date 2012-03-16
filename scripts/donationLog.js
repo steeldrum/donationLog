@@ -233,7 +233,9 @@ function loadCharities() {
 							}
 						}
 						var amount = 0;
-						donationHtml += '<li id="' + charityId + '"><a href="javascript:addDonation(' + memberId + ', ' + charityId + ', 0)">' + charityName + '</a><a class="ui-icon-nonprofit" href="javascript:addSolicitation(' + memberId + ', ' + charityId + ', 0)" data-role="button">Zero Donation</a></li>';
+						// tjs 120315
+						//donationHtml += '<li id="' + charityId + '"><a href="javascript:addDonation(' + memberId + ', ' + charityId + ', 0)">' + charityName + '</a><a class="ui-icon-nonprofit" href="javascript:addSolicitation(' + memberId + ', ' + charityId + ', 0)" data-role="button">Zero Donation</a></li>';
+						donationHtml += '<li id="' + charityId + '"><a href="javascript:addDonation(' + memberId + ', ' + charityId + ', 0)">' + charityName + '</a><a class="ui-icon-nonprofit" href="javascript:addSolicitation(' + memberId + ', ' + charityId + ', 0)" data-role="button" data-theme="c">Zero Donation</a></li>';
 					}
 					// tjs 120309 get the last letter section...
 					//donationHtml += "</ul>";
@@ -311,20 +313,47 @@ function addDonation(memberId, charityId, amount) {
 	$.mobile.changePage("#donate-dial");
 }
 
+/*
+ * DOM NOTES:
+ * This html:
+ * <li id="' + charityId + '">
+ * 	<a href="javascript:addDonation(' + memberId + ', ' + charityId + ', 0)">' + charityName + '</a>
+ *  <a class="ui-icon-nonprofit" href="javascript:addSolicitation(' + memberId + ', ' + charityId + ', 0)" data-role="button" data-theme="c">Zero Donation</a>
+ * </li>';
+e.g. jqm "enhanced" dom:
+<li id="536" data-theme="b" class="ui-btn ui-btn-icon-right ui-li ui-li-has-alt ui-btn-up-b">
+	<div class="ui-btn-inner ui-li ui-li-has-alt">
+		<div class="ui-btn-text">
+			<a href="javascript:addDonation(1, 536, 0)" class="ui-link-inherit">AARP Foundation</a>
+		</div>
+	</div>
+	<a class="ui-icon-nonprofit ui-li-link-alt ui-btn ui-btn-up-b" href="javascript:addSolicitation(1, 536, 0)" data-role="button" data-theme="b" title="Zero Donation">
+		<span class="ui-btn-inner">
+			<span class="ui-btn-text"/>
+			<span title="" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-notext ui-btn-corner-all ui-shadow">
+				<span class="ui-btn-inner ui-btn-corner-all">
+					<span class="ui-btn-text"/>
+					<span class="ui-icon ui-icon-refresh ui-icon-shadow"/>
+				</span>
+			</span>
+		</span>
+	</a>
+</li>
+ */
 function addSolicitation(memberId, charityId, amount) {
-	// tjs 111217
-	//var queryStr = 'li #' + charityId + ' a[2]';
-	// tjs 111218
-	//var queryStr = 'li #' + charityId + ' :last-child';
-	//alert("addSolicitation queryStr " + queryStr);
-	//var elm = $(queryStr);
-	//$(queryStr).removeClass('ui-icon-nonprofit').addClass('ui-icon-nonprofit-click');
-	//$(currentPage).trigger('create');
-	//$(currentPage).page();
-
+	// this mimics providing the user with feedback that the click occurred
+	//alert('donationLog currentTheme before query...');
+	// change icon to a check...
+	$('#' + charityId + ' :nth-child(2)').find('.ui-icon-refresh').removeClass('ui-icon-refresh').addClass('ui-icon-check');
+	//alert('donationLog currentTheme after query...');
+	// do the actual solicitation log
 	doAmountTransaction(0, charityId, memberId, 0, amount);
-	//$(queryStr).removeClass('ui-icon-nonprofit-click').addClass('ui-icon-nonprofit');
-	//alert("addSolicitation done...");
+	//alert('donationLog addSolicitation charityId ' + charityId);
+	// pause 1/2 second changing the icon back to the original 'refresh' state (used in lieu of no recycle icon)
+	setTimeout(function() {
+		//alert('donationLog addSolicitation re-enable');
+		$('#' + charityId + ' :nth-child(2)').find('.ui-icon-check').removeClass('ui-icon-check').addClass('ui-icon-refresh');
+		},500);
 }
 
 function processDonationForm() {
