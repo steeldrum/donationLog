@@ -23,13 +23,29 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 	<meta charset="utf-8">
 	<title>Charity Hound</title> 
 	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
-	<link rel="stylesheet" href="styles/jquery.mobile-1.0.1.min.css" /> 
+	<!-- tjs 130105 try all CDC links -->
+	<!-- link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" / -->
+	
+	<!-- tjs 130203 upgrade to 1.2.0 final -->
+	<!-- tjs 130108 direct links -->
+	<link rel="stylesheet" href="styles/jquery.mobile-1.2.0.min.css" /> 
+	<!-- link rel="stylesheet" href="styles/jquery.mobile-1.2.0.css" / -->
+	<!-- tjs 130102 upgrade to 1.2.1.alpha --> 
+	<!-- link rel="stylesheet" href="styles/jquery.mobile-1.0.1.min.css" / --> 
+	<!--  tjs 121023 link rel="stylesheet" href="styles/jquery.mobile-1.0.1.min.css" / --> 
 	<!-- link rel="stylesheet" href="styles/jquery.mobile-1.0.min.css" / --> 
 	<!-- link rel="stylesheet" href="styles/jquery.mobile.min.css" / --> 
 	<!-- link rel="stylesheet" href="styles/jquery.mobile-1.0rc3.min.css" / --> 
     <link rel="stylesheet" href="styles/donationLog.css">
     <script src="scripts/donationLog.js"></script>
-	<script src="scripts/jquery-1.6.4.min.js"></script>
+	<!-- tjs 130105 try all CDC links -->
+	<!-- script src="http://code.jquery.com/jquery-1.8.2.min.js"></script -->
+	<!-- tjs 130103 upgrade to 1.2.1.alpha use proper jquery --> 
+	<script src="scripts/jquery.js"></script>
+	<!-- script src="scripts/jquery-1.8.2.min.js"></script -->
+	<!-- tjs 130102 upgrade to 1.2.1.alpha --> 
+	<!-- script src="scripts/jquery-1.6.4.min.js"></script -->
+	<!-- tjs 121023 script src="scripts/jquery-1.6.4.min.js"></script-->
 	<script>
 			//globals used for account management
 		var loginAccountNumber = 0;
@@ -42,10 +58,14 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 		// tjs 111223
 		//var charitiesHtml = '<ul><li></li></ul>';
 		var charitiesHtml = new Array();
-		var numberSections = 11;
-		var currentSectionNumber = 0;
-		var sectionLetters = new Array(numberSections);
-		var sectionRanges = new Array(numberSections);
+		// tjs 130107
+		//var numberSections = 11;
+		//var currentSectionNumber = 0;
+		//var sectionLetters = new Array(numberSections);
+		//var sectionRanges = new Array(numberSections);
+		
+		// tjs 130105
+		var charitiesListHtml;
 		
 		$(document).bind('mobileinit',function(){ 
 		 	// Globally configure search filter placeholder text
@@ -69,12 +89,15 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 			);
 		});*/
 
+		// tjs 130104 temp disable		
 		$(document).bind('pagebeforechange',function(e, data){ 
 		 	// Get the page
 		 	var toPage = data.toPage;
 		 	//alert("pagebeforechange toPage " + toPage);
 		 	if (typeof(toPage) == "string") {
-		 		var index = toPage.indexOf("charities-page");
+		 		// tjs 130108
+		 		//var index = toPage.indexOf("charities-page");
+		 		var index = toPage.indexOf("charities.html");
 		 		if (index <0) {
 		 			index = toPage.indexOf("report-page");
 		 		}
@@ -87,8 +110,182 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 			}
 		});
 
+		// tjs 130104
+		// popup events
+/*		
+		$( '#logSolicitation' ).live("popupbeforeposition",
+		    function(event, ui) { alert("logSolicitation popupbeforeposition"); }
+		});
+		 
+		 $( '#logSolicitation' ).live("popupafteropen",
+		    function(event, ui) { alert("logSolicitation popupafteropen"); }
+		});
+		
+		$( '#logSolicitation' ).live("popupafterclose",
+		    function(event, ui) { alert("logSolicitation popupafterclose"); }
+		});
+
+		$( "#logSolicitation" ).live({
+		   popupbeforeposition: function(event, ui) { alert("logSolicitation popupbeforeposition"); }
+		});
+		 
+		 $( "#logSolicitation" ).live({
+		   popupafteropen: function(event, ui) { alert("logSolicitation popupafteropen"); }
+		});
+		
+		$( "#logSolicitation" ).live({
+		   popupafterclose: function(event, ui) { alert("logSolicitation popupafterclose"); }
+		});
+
+		$( "#logSolicitation" ).bind({
+		   popupbeforeposition: function(event, ui) { alert("logSolicitation popupbeforeposition"); }
+		});
+		 
+		 $( "#logSolicitation" ).bind({
+		   popupafteropen: function(event, ui) { alert("logSolicitation popupafteropen"); }
+		});
+		
+		$( "#logSolicitation" ).bind({
+		   popupafterclose: function(event, ui) { alert("logSolicitation popupafterclose"); }
+		});
+*/
+		/*
+		$( document ).on( "pageinit", function() {
+				$( "#logSolicitation" ).on({
+					popupbeforeposition: function() {
+						alert("logSolicitation popupbeforeposition...");
+						//var h = $( window ).height();
+						
+						//$( "#popupPanel" )
+						//	.css( "height", h );
+					}
+				});
+					 
+				//$( "#logSolicitation button" ).on( "click", function() {	
+				//	$( "#logSolicitation" ).popup('close');
+				//});
+		});
+$( document ).on( "pageinit", function() {
+$( '#logSolicitation' ).on({
+	popupbeforeposition: function() {
+		alert("logSolicitation popupbeforeposition...");
+		//var h = $( window ).height();
+		
+		//$( "#popupPanel" )
+		//	.css( "height", h );
+	}
+});
+});
+		*/
+// tjs 130104 for debug all work AOK
+/*
+		$( document ).on( "pageinit", function() {
+				$( "#login-dial" ).on({
+					popupbeforeposition: function() {
+						alert("login-dial popupbeforeposition...");
+					}
+				});				 
+				//$( "#login-dial button" ).on( "click", function() {	
+				//	$( "#login-dial" ).popup('close');
+				//});
+				$( "#login-dial" ).on({
+					popupafteropen: function() {
+						alert("login-dial popupafteropen...");
+					}
+				});				 
+				$( "#login-dial" ).on({
+					popupafterclose: function() {
+						alert("login-dial popupafterclose...");
+					}
+				});				 
+		});
+		*/
+		// tjs 130105 for single page model
+		$( document ).delegate("#charities-page", "pagebeforecreate", function() {
+  			//alert('A page with an id of "charities-page" is about to be created by jQuery Mobile!');
+			//$('#charitiesList').empty();
+			//alert("index charities-page pagebeforecreate charitiesListHtml " + charitiesListHtml);
+			$('#charitiesList').html(charitiesListHtml);
+			//$('#charitiesList').append(charitiesListHtml);
+		});
+		
+		// tjs 130104 for debug
+		$( document ).on( "pageinit", function() {
+				$( "#logSolicitation" ).on({
+					popupbeforeposition: function() {
+						//alert("logSolicitation popupbeforeposition...");
+						//$( ".poppy" ).trigger( "create" );
+				        //var h = $( window ).height();
+
+				        //$( "#logSolicitation" ).css( "height", h );
+					}
+				});				 
+				//$( "#login-dial button" ).on( "click", function() {	
+				//	$( "#login-dial" ).popup('close');
+				//});
+				$( "#logSolicitation" ).on({
+					popupafteropen: function() {
+						//alert("logSolicitation popupafteropen...");
+						//$( ".poppy" ).trigger( "create" );
+					}
+				});				 
+				$( "#logSolicitation" ).on({
+					popupafterclose: function() {
+						//alert("logSolicitation popupafterclose...");
+						var cancelled = document.solicitationLogForm.cancelled.value;
+						if (cancelled == 'false') {
+							var charityId = document.solicitationLogForm.charityId.value;
+							var memberId = document.solicitationLogForm.memberId.value;
+							//var blankEnvelope = document.solicitationLogForm.blankEnvelope.value;
+							//var currencyInEnvelope = document.solicitationLogForm.currencyInEnvelope.value;
+							// tjs 130109
+							var blankEnvelope = document.solicitationLogForm.blankEnvelope.checked;
+							var currencyInEnvelope = document.solicitationLogForm.currencyInEnvelope.checked;
+							//var blankEnvelope = document.solicitationLogForm.blankEnvelope.checked == 'true';
+							//var currencyInEnvelope = document.solicitationLogForm.currencyInEnvelope.checked == 'true';
+							//alert('index logSolicitation popupafterclose memberId ' + memberId + " charityId " + charityId);
+							//alert('index logSolicitation popupafterclose memberId ' + memberId + " charityId " + charityId + " blankEnvelope? " + blankEnvelope + " currencyInEnvelope? " + currencyInEnvelope);
+							logSolicitation(memberId, charityId, blankEnvelope, currencyInEnvelope);
+						}
+					}
+				});				 
+				$( "#makeDonation" ).on({
+					popupafterclose: function() {
+						//alert("logSolicitation popupafterclose...");
+						var cancelled = document.makeDonationForm.cancelled.value;
+						if (cancelled == 'false') {
+							var charityId = document.makeDonationForm.charityId.value;
+							var memberId = document.makeDonationForm.memberId.value;
+							var amount = document.makeDonationForm.amount.value;
+							// tjs 130109
+							var confidential = document.makeDonationForm.confidential.checked;
+							var reminderSchedule = document.makeDonationForm.reminderSchedule.checked;
+							var blankEnvelope = document.makeDonationForm.blankEnvelope.checked;
+							var currencyInEnvelope = document.makeDonationForm.currencyInEnvelope.checked;
+							//var confidential = document.makeDonationForm.confidential.checked == 'true';
+							//var reminderSchedule = document.makeDonationForm.reminderSchedule.checked == 'true';
+							//var blankEnvelope = document.makeDonationForm.blankEnvelope.checked == 'true';
+							//var currencyInEnvelope = document.makeDonationForm.currencyInEnvelope.checked == 'true';
+							//alert('index logSolicitation popupafterclose memberId ' + memberId + " charityId " + charityId);
+							//alert('index makeDonation popupafterclose memberId ' + memberId + " charityId " + charityId + " amount " + amount + " confidential? " + confidential + " reminderSchedule? " + reminderSchedule + " blankEnvelope? " + blankEnvelope + " currencyInEnvelope? " + currencyInEnvelope);
+							makeDonation(memberId, charityId, amount, confidential, reminderSchedule, blankEnvelope, currencyInEnvelope);
+						}
+					}
+				});				 
+		});
+
+		
 		function login() {
-			$.mobile.changePage("#login-dial");
+			// tjs 130103 convert to popup
+			//$( "#myPopupDiv" ).popup( "open" )
+			//$.mobile.changePage("#login-dial");
+			//$( "#login-dial" ).popup( "open" );
+			//$( "#myPopupDiv" ).popup();
+			//$( "#login-dial" ).popup();
+			//    $( ".selector" ).popup({ theme: "a" });
+			//$( "#login-dial" ).popup({ theme: "a" });
+			//$( "#login-dial" ).popup( "open" );
+			$( "#login-dial" ).popup( "open" ).trigger( "create" );
 		}
 
 		function logout() {
@@ -107,7 +304,14 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 		}
 		
 	</script>
-	<script src="scripts/jquery.mobile-1.0.1.min.js"></script>
+	<!-- tjs 130105 try all CDC links -->
+	<!-- script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script -->
+	<!-- tjs 130203 upgrade to 1.2.0 final -->
+	<script src="scripts/jquery.mobile-1.2.0.min.js"></script>
+	<!-- script src="scripts/jquery.mobile-1.2.0.js"></script -->
+	<!-- tjs 130102 upgrade to 1.2.1.alpha --> 
+	<!-- script src="scripts/jquery.mobile-1.0.1.min.js"></script -->
+	<!--  tjs 121023 script src="scripts/jquery.mobile-1.0.1.min.js"></script -->
 	<!-- script src="scripts/jquery.mobile-1.0.min.js"></script -->
 	<!-- script src="scripts/jquery.mobile.min.js"></script -->
 	<!-- script src="scripts/jquery.mobile-1.0rc3.min.js"></script -->
@@ -129,7 +333,11 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 			<li data-role="list-divider">Choices</li>
 			<li>
 			  <!-- a href="#charities-page" -->
-			  <a href="javascript:hijaxCharitiesPage(0);">
+			  <!-- tjs 130102 consider prefetch page ???
+			   -->
+			   <!-- tjs 130105 use separate html page... -->
+			  <!-- a href="javascript:hijaxAllCharitiesPage();" -->
+			  <a href="charities.html">
 				<h3>Charities</h3>
 			  </a>
 			</li>
@@ -144,10 +352,39 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 			  </a>
 			</li>					
 		</ul>
-	</div>	
+
+		<!-- Login Page/Dialog -->
+		<div data-role="popup" id="login-dial">
+			<div data-role="header">
+				<h1>Login</h1>
+			</div>
+			
+			<div data-role="content" class="poppy">	
+					<form name="loginForm">
+						<p>
+						Charity Hound login...
+						</p>
+				<div data-role="fieldcontain">
+			    <label for="name" data-mini="true">Username:</label>
+			    <input type="text" name="name" id="name" value="" placeholder="username" data-mini="true" />
+			    </div>
+				<div data-role="fieldcontain">
+			    <label for="password" data-mini="true">Password:</label>
+			    <input type="password" name="pword" id="pword" value="" placeholder="" data-mini="true" />
+			    </div>
+					</form>
+				<br><br>
+				<!-- data-mini="true" for smaller font -->
+				<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-mini="true">Cancel</a>		
+				<a href="javascript:processLoginForm();" data-role="button" data-inline="true" data-mini="true" data-theme="a">Login</a>
+			</div>
+			<script>
+		
+			</script>
+		</div>
+	</div><!-- content -->
+		
 </div>
-
-
 
 <!-- Report -->
 <div data-role="page" data-add-back-btn="true" id="report-page" data-title="Report">
@@ -209,53 +446,21 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 	<div data-role="content">
                 <p>Charity Hound Web App gives you mobile access to your Collogistics hosted Charity
                 Hound Web Application. Record (i.e. "log") donor solicitations by selecting the charity from
-                the list.  To select a charity press a letter on the list divider that indexes the part
-                of the list where the charity name can be found.  Once the list portion is shown simply
-                scroll to the charity.  To select another charity scroll to another index list divider
-                (above or below the current selection).  Alternatively to select a charity use the
-                search field (prior to the first index divider) typing a unique part of the name.  For example to find
-                'American Red Cross' type 'red' in the search box.  If needed, after the search,
-                scroll the list.  Before you toss the solicitation in your recycling bin you can
+                the list.  To select a charity, type a few letters in the search box unique to the charity.
+                (Example use <i>red</i> not <i>american</i> for the American Red Cross).  Once the list portion is shown simply
+                scroll to the charity. Before you toss the solicitation in your recycling bin, you can
                 log the solicitation by simply clicking the far right button
                  (<a href="#" data-role="button" data-inline="true" data-icon="refresh" data-iconpos="notext">Recycle</a>
                 recycle icon).  If desired, you may also
                 log an actual donation, simply click the charity name in the list, filling out the form.
+                You may Cancel logging a solicitation (or recording your donation) using the forms' Cancel button, otherwise simply click
+                outside the form to complete the update.  (Typically you would type the next charity name in the search box to continue).
                 You may view a report of your contributions over a range of years
-                (or simply a single tax year).</p>
+                (or simply a single tax year).  Please help our rating system using the forms (see web site for more details).</p>
 	</div>
 	<script type="text/javascript">
 		/* Page specific scripts here. */
 	</script>	
-</div>
-
-<!-- Login Page/Dialog -->
-<div data-role="dialog" id="login-dial">
-	<div data-role="header">
-		<h1>Login</h1>
-	</div>
-	
-	<div data-role="content" data-theme="c">	
-			<form name="loginForm">
-				<p>
-				Charity Hound login...
-				</p>
-				<p/>
-		<p>	
-	    <label for="name">Username:</label>
-	    <input type="text" name="name" id="name" value="" placeholder="username" data-theme="d"/>
-	    </p>
-		<p>	
-	    <label for="password">Password:</label>
-	    <input type="password" name="pword" id="pword" value="" placeholder="" data-theme="d"/>
-	    </p>
-			</form>
-		<br><br>
-		<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>		
-		<a href="javascript:processLoginForm();" data-role="button" data-inline="true">Login</a>
-	</div>
-	<script>
-
-	</script>
 </div>
 
 <!-- Donate Page/Dialog -->
@@ -285,14 +490,15 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 		<br><br>
 		<!--  a href="#charities-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a -->		
 		<!--  a href="javascript:hijaxCharitiesPage(0);" data-role="button" data-inline="true" data-theme="a">Cancel</a -->		
-		<a href="javascript:hijaxCharitiesPage();" data-role="button" data-inline="true" data-theme="a">Cancel</a>		
+<!-- tjs 130102 -->
+		<!-- a href="javascript:hijaxCharitiesPage();" data-role="button" data-inline="true" data-theme="a">Cancel</a -->		
+		<a href="javascript:hijaxAllCharitiesPage();" data-role="button" data-inline="true" data-theme="a">Cancel</a>		
 		<a href="javascript:processDonationForm();" data-role="button" data-inline="true">Donate</a>
 	</div>
 	
 	<script>
 	</script>
 </div>
-
 
     <script type="text/javascript">
 
@@ -321,10 +527,19 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 				);				
 			}
 		);
-		
+
+		// tjs 130103
+		//$( "#login-dial" ).popup({ theme: "c" });
+		$( "#login-dial" ).popup({ theme: "c", overlayTheme: "a" });
+		// tjs 130103
+		//$( "#logSolicitation" ).popup({ theme: "c", overlayTheme: "a" });
+
 		setLoginButton();
-		//tjs 111223
-		loadCharities();
+		//tjs 130102
+		//loadCharities();
+		
+		//tjs 130105
+		assignCharitiesListHtml();
 		
 		$("#donations").click(function() {
 				var elm = $('#start').get(0);
@@ -338,6 +553,21 @@ test: http://localhost/~thomassoucy/donationLog/index.html
 		    });	
 
 	  });
+
+	// tjs 130104
+	/*
+	$( "#logSolicitation" ).bind({
+   popupbeforeposition: function(event, ui) { alert("logSolicitation popupbeforeposition"); }
+});
+ 
+ $( "#logSolicitation" ).bind({
+   popupafteropen: function(event, ui) { alert("logSolicitation popupafteropen"); }
+});
+
+$( "#logSolicitation" ).bind({
+   popupafterclose: function(event, ui) { alert("logSolicitation popupafterclose"); }
+});
+*/
 
 	//TODO support for ads
 	  //$("#adImage").load("getAdImageTag.php");

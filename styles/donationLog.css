@@ -24,6 +24,61 @@ release version 1.00
     padding: 5px;
 }
 
+.poppy {
+	width: 200px;
+	-webkit-border-radius: 16px;
+	    background-color: white;
+    padding: 15px;
+}
+.poppyFields {
+	width: 150px;
+}
+
+#logSolicitation-popup {
+    left: 0 !important;
+    right: auto !important;
+}
+#logSolicitation {
+    width: 200px;
+    border: 1px solid #000;
+    border-left: none;
+    background: rgba(0,0,0,.5);
+    margin: -1px 0;
+}
+
+#makeDonation-popup {
+    right: 0 !important;
+    left: auto !important;
+}
+#makeDonation {
+    width: 200px;
+    border: 1px solid #000;
+    border-right: none;
+    background: rgba(0,0,0,.5);
+    margin: -1px 0;
+}
+#makeDonation .amountLabel {
+	-webkit-box-sizing: border-box;
+	/* same value for the four corners */
+	-webkit-border-radius: 16px;
+	border: 1px grey;
+	background-color: grey;
+	}
+#makeDonation .provisionLabel {
+		-webkit-box-sizing: border-box;
+	/* same value for the four corners */
+	-webkit-border-radius: 16px;
+	border: 1px green;
+	background-color: green;
+}
+#makeDonation .envelopeLabel {
+		-webkit-box-sizing: border-box;
+	/* same value for the four corners */
+	-webkit-border-radius: 16px;
+	border: 1px red;
+	background-color: red;
+}
+
 .ui-li-heading { overflow: auto; white-space:normal; }
 img { margin:10px; }
 label {
