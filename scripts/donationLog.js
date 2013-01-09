@@ -774,9 +774,10 @@ function processLoginForm() {
 														}
 														// tjs 120311
 														charitiesHtml.length = 0;
-														sectionLetters.length = 0;
-														sectionRanges.length = 0;
-														loadCharities(); 
+														// tjs 130109
+														//sectionLetters.length = 0;
+														//sectionRanges.length = 0;
+														//loadCharities(); 
 														setTimeout(function() {
 															finalizeLogin();
 															},3000);
