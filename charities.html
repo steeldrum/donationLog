@@ -49,6 +49,7 @@
 
 		<div data-role="popup" id="logSolicitation" data-theme="none" data-shadow="false" data-tolerance="0,0">
 			<div data-role="header">
+				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
 				<h1>Envelope</h1>
 			</div>
 			<div data-role="content" class="ui-body">
@@ -65,12 +66,13 @@
     				</fieldset>
     				</div>
  				</form>
-				<a href="javascript:cancelSolicitation();" data-role="button">Cancel</a>
+				<a href="javascript:cancelSolicitation();" data-role="button" data-mini="true">Cancel</a>
 			</div><!-- content -->
 		</div><!-- popup -->
 
 		<div data-role="popup" id="makeDonation" data-theme="none" data-shadow="false" data-tolerance="0,0">
 			<div data-role="header">
+				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
 				<h1>Donation</h1>
 			</div>
 			<div data-role="content" class="ui-body">
@@ -79,18 +81,17 @@
 					<input type="hidden" name="memberId" />					
 					<input type="hidden" name="cancelled" />
 					<label for="amount" style="min-width:150px;" class="amountLabel">&nbsp;&nbsp;Amount:</label>						   						   					
-	   					<input type="number" name="amount" id="amount" value="0" min="0" data-mini="true"/><br/>	   						    			
+	   					<input type="number" name="amount" id="amount" value="0" min="0" data-mini="true"/>	   						    			
  					<div data-role="fieldcontain">
 					 <fieldset data-role="controlgroup">					 	
-	   					<legend class="provisionLabel">Provisions:</legend>	   					
+	   					<h4 class="provisionLabel">&nbsp;&nbsp;Provisions:</h4>	   					
 	   					<input type="checkbox" name="confidential" id="confidential" data-mini="true"/>
 	   						<label for="confidential" style="min-width:150px;">Confidential</label>
-
-	   					<input type="checkbox" name="reminderSchedule" id="reminderSchedule" data-mini="true"/><br/>
+	   					<input type="checkbox" name="reminderSchedule" id="reminderSchedule" data-mini="true"/>
 	   						<label for="reminderSchedule" style="min-width:150px;">Reminder Schedule</label>
     				</fieldset>
   					 <fieldset data-role="controlgroup">
-	   					<legend class="envelopeLabel">Envelope:</legend>
+	   					<h4 class="envelopeLabel">&nbsp;&nbsp;Envelope:</h4>
 	   					<input type="checkbox" name="blankEnvelope" id="blankEnvelopeDF" data-mini="true"/>
 	   						<label for="blankEnvelopeDF" style="min-width:150px;">Blank</label>
 	   					<input type="checkbox" name="currencyInEnvelope" id="currencyInEnvelopeDF" data-mini="true"/>
@@ -98,7 +99,7 @@
     				</fieldset>
     				</div>
 				</form>
-				<a href="javascript:cancelDonation();" data-role="button">Cancel</a>
+				<a href="javascript:cancelDonation();" data-role="button" data-mini="true">Cancel</a>
 				
 			</div><!-- content -->
 		</div><!-- popup -->

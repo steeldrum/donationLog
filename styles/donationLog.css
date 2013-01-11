@@ -57,26 +57,33 @@ release version 1.00
     background: rgba(0,0,0,.5);
     margin: -1px 0;
 }
+#makeDonation h4 {font-size:16px;}
+
 #makeDonation .amountLabel {
 	-webkit-box-sizing: border-box;
 	/* same value for the four corners */
 	-webkit-border-radius: 16px;
 	border: 1px grey;
 	background-color: grey;
+	opacity: 0.5;
 	}
 #makeDonation .provisionLabel {
 		-webkit-box-sizing: border-box;
 	/* same value for the four corners */
 	-webkit-border-radius: 16px;
-	border: 1px green;
-	background-color: green;
+	/* greenish */
+	border: 1px #00cc99;
+	background-color: #00cc99;
+	opacity: 0.5;
 }
 #makeDonation .envelopeLabel {
 		-webkit-box-sizing: border-box;
 	/* same value for the four corners */
 	-webkit-border-radius: 16px;
-	border: 1px red;
-	background-color: red;
+	/* redish */
+	border: 1px #ff3366;
+	background-color: #ff3366;
+	opacity: 0.5;
 }
 
 .ui-li-heading { overflow: auto; white-space:normal; }
