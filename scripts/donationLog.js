@@ -308,6 +308,11 @@ function loadAllCharities() {
 							var charityId = charity.id;
 							var memberId = charity.memberId;
 							var charityName = charity.charityName;
+							// tjs 130115
+							var shortName = '(' + charity.shortName + ')';
+							if (shortName != '()' && shortName != '( )') {
+								charityName += shortName;
+							}
 							var amount = 0;
 							// tjs 130102
 							//donationHtml += '<li id="' + charityId + '"><a href="javascript:addDonation(' + memberId + ', ' + charityId + ', 0)">' + charityName + '</a><a class="ui-icon-nonprofit" href="javascript:addSolicitation(' + memberId + ', ' + charityId + ', 0)" data-role="button" data-theme="c">Zero Donation</a></li>';
@@ -447,10 +452,18 @@ function addDonation(memberId, charityId, amount) {
 	// tjs 130109
 	document.makeDonationForm.amount.value = 0;
 	document.makeDonationForm.cancelled.value = 'false';
+	/*
 	document.makeDonationForm.confidential.checked = "";
 	document.makeDonationForm.reminderSchedule.checked = "";
 	document.makeDonationForm.blankEnvelope.checked = "";
 	document.makeDonationForm.currencyInEnvelope.checked = "";
+	// tjs 130115
+	document.makeDonationForm.confidential.value = false;
+	document.makeDonationForm.reminderSchedule.value = false;
+	document.makeDonationForm.blankEnvelope.value = false;
+	document.makeDonationForm.currencyInEnvelope.value = false;
+	*/
+	$("#makeDonation input[type='checkbox']").attr("checked",false).checkboxradio("refresh");
 	// tjs 130109
 	//$( "#makeDonation" ).popup({ theme: "c", overlayTheme: "a" });
 	//$( "#makeDonation" ).popup( "open" );
@@ -510,12 +523,21 @@ function addSolicitation(memberId, charityId, amount) {
 	document.solicitationLogForm.charityId.value = charityId;
 	document.solicitationLogForm.memberId.value = memberId;
 	document.solicitationLogForm.cancelled.value = 'false';
-	document.solicitationLogForm.blankEnvelope.checked = "";
-	document.solicitationLogForm.currencyInEnvelope.checked = "";
+	//document.solicitationLogForm.blankEnvelope.checked = "";
+	//document.solicitationLogForm.currencyInEnvelope.checked = "";
+	//document.solicitationLogForm.blankEnvelope.checked = false;
+	//document.solicitationLogForm.currencyInEnvelope.checked = false;
+	// tjs 130115
+	//document.solicitationLogForm.blankEnvelope.value = false;
+	//document.solicitationLogForm.currencyInEnvelope.value = false;
+	$("#logSolicitation input[type='checkbox']").attr("checked",false).checkboxradio("refresh");
+
 	// tjs 130109
 	//$( "#logSolicitation" ).popup({ theme: "c", overlayTheme: "a" });
 	//$( "#logSolicitation" ).popup( "open" );
+	// tjs 130115
 	$( "#logSolicitation" ).popup( "open", { theme: "c", overlayTheme: "a" } );
+	//$( "#logSolicitation" ).popup( "open", { theme: "c", overlayTheme: "a" } ).trigger( "create" );
 	//$( "#logSolicitation" ).popup( "open", { theme: "c", overlayTheme: "a", transition: "slide", positionTo: "window" } );
 	//			<div data-role="popup" id="popupPanel" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0">
 	//$( "#logSolicitation" ).popup( "open", { theme: "none", corners: "false", transition: "slideLeft", tolerance: "0,0", positionTo: "window" } );

@@ -246,7 +246,14 @@ $( '#logSolicitation' ).on({
 							//alert('index logSolicitation popupafterclose memberId ' + memberId + " charityId " + charityId);
 							//alert('index logSolicitation popupafterclose memberId ' + memberId + " charityId " + charityId + " blankEnvelope? " + blankEnvelope + " currencyInEnvelope? " + currencyInEnvelope);
 							logSolicitation(memberId, charityId, blankEnvelope, currencyInEnvelope);
-						}
+							// tjs 130115
+							//document.solicitationLogForm.blankEnvelope.checked = "";
+							//document.solicitationLogForm.currencyInEnvelope.checked = "";
+							//document.solicitationLogForm.blankEnvelope.value = false;
+							//document.solicitationLogForm.currencyInEnvelope.value = false;
+							//document.solicitationLogForm.blankEnvelope.checked = false;
+							//document.solicitationLogForm.currencyInEnvelope.checked = false;
+					}
 					}
 				});				 
 				$( "#makeDonation" ).on({
